@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.RestaurantProject.www.reservation.dao.ReservationMapper">
+
+	  <insert id="reservation" parameterType="reserve">
+	  insert into
+	 	 reservation(
+	 	 rvnum
+	 	 ,subid
+	 	 ,subname
+	 	 ,subloyalty
+	 	 ,selectfood
+	 	 ,quantity
+	 	 ,totalprice
+	 	 )values(	
+	 	 rvnum_seq.nextval
+	 	 ,#{subid}
+	 	 ,#{subname}
+	 	 ,#{subloyalty}
+	 	 ,#{selectfood}
+	 	 ,#{quantity}
+	 	 ,#{totalprice}
+	 	 )
+	  </insert>
+	  
+	  
+	  <select id="getAllReservation" resultType="reserve">
+	  select 
+	  	 rvnum
+	 	 ,subid
+	 	 ,subname
+	 	 ,(SELECT loyalty FROM RESTUSER WHERE userid=subid) subloyalty
+	 	 ,to_char(aptime,'HH24:MI:SS') aptime
+	 	 ,selectfood
+	 	 ,quantity
+	 	 ,totalprice
+	  from
+	  	reservation
+	  order by
+	  	aptime asc	
+	  </select>
+	  
+	  
+	  <delete id="reserveCancel" parameterType="reserve">
+	  delete
+	  	reservation
+	  where
+	  	rvnum = #{rvnum}
+	  	and subid = #{subid}
+	  </delete>
+	  
+	  
+	  <delete id="receipt" parameterType="reserve">
+	  delete
+	  	reservation
+	  where
+	  	rvnum = #{rvnum}
+	  	and subid = #{subid}
+	  </delete>
+	  
+	  
+	  <select id="getTotal" parameterType="hashmap" resultType="int">
+	  	select
+	  		count(*)
+	  	from
+	  		reservation
+	  	<if test="searchText != null">            
+		where
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>	
+	  </select>
+	  
+	  <select id="getOneReserve" resultType="reserve" parameterType="int">
+	  select
+	     rvnum
+	     ,subid
+	 	 ,subname
+	 	 ,(SELECT loyalty FROM RESTUSER WHERE userid=subid) subloyalty
+	 	 ,to_char(aptime,'HH24:MI:SS') aptime
+	 	 ,selectfood
+	 	 ,quantity
+	 	 ,totalprice
+	  from
+	  	  reservation
+	  where
+	      rvnum = #{rvnum}
+	  
+	  </select>
+	  
+	   <select id="getAllReserve" resultType="reserve" parameterType="hashmap">
+	  select 
+	  	 rvnum
+	 	 ,subid
+	 	 ,subname
+	 	 ,(SELECT loyalty FROM RESTUSER WHERE userid=subid) subloyalty
+	 	 ,to_char(aptime,'HH24:MI:SS') aptime
+	 	 ,selectfood
+	 	 ,quantity
+	 	 ,totalprice
+	  from
+	  	reservation
+		<!-- <if test="searchText != null"> -->
+		where
+		<if test="searchChoice == 'subid'">
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>
+		<if test="searchChoice == 'subname'">
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>
+		
+		<!-- </if> -->
+		
+		order by
+		<if test="searchChoice == 'subid'">
+			rvnum desc
+		</if>		
+		<if test="searchChoice == 'subname'">
+			rvnum desc
+		</if>		
+		
+	  </select>
+	  
+	  	<!-- 디테일 저장  완성 -->
+	<insert id="insertDetail" parameterType="detail">
+		insert into detail (
+			detailnum
+			, rvnum
+			, id
+			, detail
+		)
+		values (
+			detail_seq.nextval
+			, #{rvnum}
+			, #{id}
+			, #{detail}
+		)
+	</insert>
+	
+	<!-- 리플 삭제 -->
+	<delete id="deleteDetail" parameterType="detail">
+		delete
+		from
+			detail
+		where
+			rvnum = #{rvnum}
+			and id = #{id}
+	</delete>
+	
+	<!-- 현재 글의 리플 목록 완성 -->
+	<select id="listDetail" parameterType="int" resultType="detail">
+		select 
+			detailnum
+			, rvnum
+			, id
+			, detail
+			, to_char(inputdate, 'YYYY-MM-DD') inputdate
+		from 
+			detail 
+		where
+			rvnum = #{rvnum}
+		order by detailnum asc
+	</select>
+
+	<!-- 리플 수정 -->
+	<update id="updateDetail" parameterType="detail">
+		update
+			detail
+		set
+			detail = #{detail}
+		where
+			detailnum = #{detailnum}
+			and id = #{id}
+	</update>
+	  
+	  
+	  
+	  
+	  
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	 <typeAliases>
+		<typeAlias type="com.RestaurantProject.www.user.vo.User" alias="user"/>
+		<typeAlias type="com.RestaurantProject.www.food.vo.Food" alias="food"/>
+		<typeAlias type="com.RestaurantProject.www.reservation.vo.Reservation" alias="reserve"/>
+		<typeAlias type="com.RestaurantProject.www.reservation.vo.Detail" alias="detail"/>
+	</typeAliases>
+	
+ 		<!-- mapper폴더를 추가했으니 경로상에는 mapper/ 가 추가된다. -->
+ 	<mappers>
+		<mapper resource="mapper/userMapper.xml" />
+		<mapper resource="mapper/foodMapper.xml" />
+		<mapper resource="mapper/reservationMapper.xml" />
+	</mappers>   
+</configuration>

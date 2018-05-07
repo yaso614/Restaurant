@@ -1,0 +1,11 @@
+html, body{
+  height: 100%;
+}
+body { 
+			background-image: url(http://www.ozarlington.com/wp-content/uploads/2017/04/bar-buffet.jpg) ;
+			background-repeat:  no-repeat;
+			background-attachment: fixed;
+			background-size:  cover;
+  
+}
+

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.RestaurantProject.www" />
+	
+	<!-- LoginInterceptor 클래스 파일을 bean에 등록 -->
+	<!-- beans:bean 태그를 열어서 안쪽에서 id를 내가 지정해주고 class로 연결 컨트롤 클릭해서 연결 잘됬나 확인가능 -->
+	<beans:bean id="LoginInterceptor" class="com.RestaurantProject.www.common.interceptor.LoginInterceptor"></beans:bean>
+	<!-- 인터셉터 설정 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 
+			<mvc:mapping path="/customer/*"/> customer 바로 밑에만 적용
+			<mvc:mapping path="/customer/**"/> customer 밑에 있는 전체 적용
+			-->
+			<mvc:mapping path="/reservation/reserveListForm"/>
+			<mvc:mapping path="/food/**"/>	
+			<mvc:mapping path="/reservation/**"/>	
+			<!-- 업데이트 2시간 지나서 세션 만료됬을때 업데이트 시도할때 처리 로그인 페이지로 돌려보내줘야하니까 -->
+			<beans:ref bean="LoginInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>	 
+	<!-- 
+	<beans:bean id="LoginInterceptor" class="com.RestaurantProject.www.common.interceptor.LoginInterceptor"></beans:bean>
+	인터셉터 설정
+	<mvc:interceptors>
+		<mvc:interceptor>
+			
+			<mvc:mapping path="/customer/*"/> customer 바로 밑에만 적용
+			<mvc:mapping path="/customer/**"/> customer 밑에 있는 전체 적용
+			
+			<mvc:mapping path="/reservation/reserveListForm"/>
+			<mvc:mapping path="/food/**"/>	
+			<mvc:mapping path="/reservation/**"/>	
+			업데이트 2시간 지나서 세션 만료됬을때 업데이트 시도할때 처리 로그인 페이지로 돌려보내줘야하니까
+			<beans:ref bean="LoginInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>	 
+	 -->
+	 
+	 <beans:bean id="heartbreaker" class="com.RestaurantProject.www.common.interceptor.LoginInterceptor"></beans:bean>
+	 
+	 <mvc:interceptors>
+	 	<mvc:interceptor>
+	 		<mvc:mapping path="/resrvation/**"/>
+	 		<mvc:mapping path="/food/**"/>
+	 		<beans:ref bean="heartbreaker"/>
+	 	</mvc:interceptor>
+	 </mvc:interceptors>
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+</beans:beans>

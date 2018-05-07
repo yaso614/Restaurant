@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.RestaurantProject.www.food.dao.FoodMapper">
+
+	  <insert id="cooking">
+	  	insert into
+	  		food
+	  		(
+	  		foodnum
+	  		,fname
+	  		,price
+	  		,cost
+	  		,foodtype
+	  		<if test="originalfile != null and savedfile != null">
+	  		,originalfile
+	  		,savedfile
+	  		</if>
+	  		)values(
+	  		food_seq.nextval
+	  		,#{fname}
+	  		,#{price}
+	  		,#{cost}
+	  		,#{foodtype}
+	  		<if test="originalfile != null and savedfile != null">
+	  		,#{originalfile}
+	  		,#{savedfile}
+	  		</if>
+	  		)
+	  </insert>
+	  
+	  
+	  <select id="getAllFood" resultType="food" parameterType="hashmap">
+	  select 
+	  	foodnum
+	  	,fname
+	  	,price
+	  	,cost
+	  	,cookingdate
+	  	,foodtype
+	  	,foodsales
+	  	,originalfile
+	  	,savedfile
+	  from
+	  	food
+	  <if test="searchChoice != 'foodsales'">	
+		<if test="searchText != null">
+		where
+		<if test="searchChoice == 'fname'">
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>
+		<if test="searchChoice == 'foodtype'">
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>
+		<if test="searchChoice == 'price'">
+			${searchChoice} <![CDATA[ <= ]]> #{searchText}
+		</if>
+		
+	  </if>
+		
+	</if>
+		order by
+		<if test="searchChoice == 'fname'">
+			foodnum desc
+		</if>		
+		<if test="searchChoice == 'price'">
+			price desc
+		</if>		
+		<if test="searchChoice == 'foodsales'">
+			foodsales desc
+		</if>		
+		<if test="searchChoice == 'foodtype'">
+			foodsales desc
+		</if>		
+	  </select>
+	  
+	  
+	  
+	  
+	  <select id="getOneFood" resultType="food" parameterType="food">
+	  select 
+	  	foodnum
+	  	,fname
+	  	,price
+	  	,cost
+	  	,cookingdate
+	  	,foodtype
+	  	,foodsales
+	  	,originalfile
+	  	,savedfile
+	  from
+	  	food
+	  where
+	  	fname = #{fname}
+	  	and foodnum = #{foodnum}
+	  </select>
+	
+	  <delete id="deleteFood" parameterType="food" >
+		delete
+			food
+		where
+			fname = #{fname} 
+			and foodnum = #{foodnum} 
+	  </delete>
+	  
+	  <select id="getTotal" parameterType="hashmap" resultType="int">
+	  	select
+	  		count(*)
+	  	from
+	  		food
+	  	<if test="searchText != null">            
+		where
+			${searchChoice} like '%' || #{searchText} || '%' 
+		</if>	
+	  </select>
+	  
+	  
+	  <update id="updateFood" parameterType="food">
+	  update
+	  	food
+	  set
+	  	fname =#{fname}
+	  	,price =#{price}
+	  	,cost =#{cost}
+	  	,foodtype =#{foodtype}
+  	<if test="originalfile != null and savedfile != null">
+		,originalfile = #{originalfile}
+		,savedfile = #{savedfile}
+	</if>
+	  where
+	  	foodnum = #{foodnum}
+	  </update>
+	  
+	  <update id="foodsalesUpdate" parameterType="food">
+	  update
+	  	food
+	  set
+	  	foodsales = foodsales + #{foodsales}
+	  where
+	  	fname = #{fname}	
+	  </update>
+	  
+	  
+	  <select id="toto" resultType="food">
+	  select 
+	  	foodnum
+	  	,fname
+	  	,price
+	  	,cost
+	  	,cookingdate
+	  	,foodtype
+	  	,foodsales
+	  	,originalfile
+	  	,savedfile
+	  from
+	  	food
+	  </select>
+	  
+	  <select id="fnameCheck" resultType="string" parameterType="string">
+	  select
+	  	fname
+	  from
+	   food
+	  where
+	  	fname = #{fname}
+	  </select>
+	  
+	  <update id="clearSales">
+	  update
+	  	food
+	  set
+	  	foodsales = 0
+	  </update>
+	  
+	  
+	  
+	  
+	  
+	  
+</mapper>
